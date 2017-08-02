@@ -56,7 +56,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         if UIApplication.shared.applicationState != .active {
             print("background location : \(newLocation.coordinate.latitude), \(newLocation.coordinate.longitude)")
             
-            if (lastLocation.distance(from: newLocation) >= 0.0) && (WeatherService.sharedManager.lastTempCurrentLocation != nil) {
+            if (lastLocation.distance(from: newLocation) >= 200.0) && (WeatherService.sharedManager.lastTempCurrentLocation != nil) {
                 WeatherService.obtainWeatherBackground(newLocation)
             }
             

@@ -65,9 +65,9 @@ class LocalNotificationService: NSObject, UNUserNotificationCenterDelegate {
     fileprivate class func outputCorrectionDegreeСelsius(_ temp: Int) -> String {
         
         if temp < 5 {
-            return String(temp) + "градуса"
+            return String(temp) + " градуса"
         } else {
-            return String(temp) + "градусов"
+            return String(temp) + " градусов"
         }
     }
     

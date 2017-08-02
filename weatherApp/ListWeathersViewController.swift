@@ -14,7 +14,7 @@ import RxSwift
 import RxDataSources
 import NSObject_Rx
 
-class ListWeathersViewController: UIViewController {
+class ListWeathersViewController: UIViewController, UITableViewDelegate {
 
     @IBOutlet var tableView: UITableView!
     @IBOutlet var searchBar: ShakingSearchBar!
@@ -35,6 +35,8 @@ class ListWeathersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.delegate = self
         
         gripperView.layer.cornerRadius = 2.5
         seperatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
@@ -65,14 +67,12 @@ extension ListWeathersViewController: PulleyDrawerViewControllerDelegate {
     
     func drawerPositionDidChange(drawer: PulleyViewController)
     {
-        //tableView.isScrollEnabled = drawer.drawerPosition == .open
+        tableView.isScrollEnabled = drawer.drawerPosition == .open
         
         if drawer.drawerPosition != .open {
             view.endEditing(true)
             self.searchBar.setShowsCancelButton(false, animated: false)
-        } else {
-            
-        }
+        } 
     }
 }
 
@@ -108,6 +108,8 @@ extension ListWeathersViewController {
                     self.obtainPlacesDataStorage()
 
                 } else {
+                    
+                    self.searchBar.setShowsCancelButton(true, animated: true)
                     self.obtainPlacesMap(text: query)
                 }
             })
@@ -150,6 +152,7 @@ extension ListWeathersViewController {
             .asObservable()
             .bindTo(tableView.rx.items(dataSource: dataSource))
             .addDisposableTo(rx_disposeBag) // Instead of creating the bag again and again, use the extension NSObject_rx
+    
     }
     
     func setupCellTapHandling() {
@@ -166,6 +169,7 @@ extension ListWeathersViewController {
                     if weatherItem.temp == nil {
                         let selectedItem = weatherItem.placemapk
                         self.handleMapSearchDelegate?.dropPinZoomIn(selectedItem!)
+                        self.searchBar.text = ""
                         self.view.endEditing(true)
                         if let drawerVC = self.parent as? PulleyViewController
                         {
@@ -223,12 +227,14 @@ extension ListWeathersViewController {
     }
 }
 
+// Mark: ScrollView
 
 extension ListWeathersViewController {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        view.endEditing(true)
+        self.searchBar.setShowsCancelButton(false, animated: false)
     }
+    
 }
 
 // Mark: HelpersFunctions
